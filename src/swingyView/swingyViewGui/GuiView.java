@@ -1,5 +1,8 @@
 package swingyView.swingyViewGui;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -104,7 +107,9 @@ public class GuiView {
 	private void selectPage() {
 		Button submit = new Button("SUBMIT");
 		Button home = new Button("BACK");
-		String tempHero[] = {"Adonis", "Kalombo", "King", "Creed"};
+		List<String> tempHero = new ArrayList<>();
+		
+		tempHero = WorldContriller.collect();
 		
 		selectPane = new GridPane();
 		sceneSelect = new Scene(selectPane, 1500, 800);
@@ -125,7 +130,9 @@ public class GuiView {
 		
 		//setting action for buttons
 		home.setOnAction(value ->{stage.setScene(sceneP1);});
-		submit.setOnAction(value ->{showWorld();});
+		submit.setOnAction(value ->{
+			showWorld();
+			});
 		
 		submit.setStyle("-fx-font-weight: bold; -fx-font-size: 20px; -fx-text-fill: #4cd137;");
 		home.setStyle("-fx-font-weight: bold; -fx-font-size: 20px; -fx-text-fill: #4cd137;");
@@ -194,7 +201,9 @@ public class GuiView {
 		
 		//setting action for buttons
 		home.setOnAction(value ->{stage.setScene(sceneP1);});
-		submit.setOnAction(value ->{showWorld();});
+		submit.setOnAction(value ->{
+			WorldContriller.newHero(tfID.getValue() + "\t" + tfsub.getValue());
+			showWorld();});
 		
 		createPane.setStyle("-fx-background-image: url('"+wall+"')");
 		tfID.setStyle("-fx-font-weight: bold; -fx-font-size: 20px; -fx-text-fill: #4cd137;");
