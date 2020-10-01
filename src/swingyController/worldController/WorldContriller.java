@@ -8,6 +8,7 @@ import swingyController.heroController.HeroController;
 
 public class WorldContriller extends Application{
 	private static HeroController heroController = null;
+	private static int level = 9;
 	
 	public static void main(String[] args) {
 		heroController = new HeroController();
@@ -22,7 +23,11 @@ public class WorldContriller extends Application{
 	}
 	
 	public static int getWorldSize() {
-		return (9);//temp value
+		return (level);//temp value
+	}
+	
+	public static void setWorld() {
+		level += 10;
 	}
 	
 	public static int getLevel() {

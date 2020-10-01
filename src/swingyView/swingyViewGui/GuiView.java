@@ -37,13 +37,14 @@ public class GuiView {
 	private GridPane worldPane  = null;
 	private GridPane fightPane = null;
 	
-	Button stats = null;
-	Button north = null;
-	Button south = null;
-	Button east = null;
-	Button west = null;
-	Button fight = null;
-	Button run = null;
+	private Button stats = null;
+	private Button north = null;
+	private Button south = null;
+	private Button east = null;
+	private Button west = null;
+	private Button fight = null;
+	private Button run = null;
+	private Button next = null;
 	
 	//Parameterized constructor
 	public GuiView(Stage stage1) {
@@ -212,6 +213,7 @@ public class GuiView {
 		int size = WorldContriller.getWorldSize();
 		Button home = new Button("Quit");
 		stats = new Button("Stats");
+		next = new Button ("Next ");
 		north = new Button("W");
 		south = new Button("S  ");
 		east = new Button("A");
@@ -225,8 +227,15 @@ public class GuiView {
 		about.setPrefHeight(500);
 		about.setDisable(true);
 		
+		next.setVisible(false);
 		fight.setVisible(false);
 		run.setVisible(false);
+		
+		next.setOnAction(value ->{
+			WorldContriller.setWorld();
+			//selectPage();//
+			showWorld();
+		});
 		
 		worldPane.setStyle("-fx-background-image: url('"+wall+"')");
 		
@@ -264,6 +273,7 @@ public class GuiView {
 		worldPane.add(run, size/2, size + 2);
 		worldPane.add(home, 0, size + 1);
 		worldPane.add(stats, size -1, size + 1);
+		worldPane.add(next, size -1, size + 1);
 		
 		//showing hero before movements
 		showHero();
@@ -273,24 +283,40 @@ public class GuiView {
 			hero = heroController.moveHero("UP");
 			fightMode();
 			showHero();
+			if (heroController.getComplet()) {
+				System.out.printf("game won");
+				gameWon();
+			}
 		});
 		//down
 		south.setOnAction(value -> {
 			hero = heroController.moveHero("DOWN");
 			fightMode();
 			showHero();
+			if (heroController.getComplet()) {
+				System.out.printf("game won");
+				gameWon();
+			}
 		});
 		//left
 		east.setOnAction(value -> {
 			hero = heroController.moveHero("LEFT");
 			fightMode();
 			showHero();
+			if (heroController.getComplet()) {
+				System.out.printf("game won");
+				gameWon();
+			}
 		});
 		//right
 		west.setOnAction(value -> {
 			hero = heroController.moveHero("RIGHT");
 			fightMode();
 			showHero();
+			if (heroController.getComplet()) {
+				System.out.printf("game won");
+				gameWon();
+			}
 		});
 		//fight
 		fight.setOnAction(value ->{
@@ -299,15 +325,29 @@ public class GuiView {
 			}else {
 				gameMode();
 				a.setAlertType(AlertType.CONFIRMATION);
+				a.setTitle("Tough Guy Ehhy");
+				a.setContentText("Winner\n reqard -> "+ heroController.getAward());
 				a.show();
-				
+				a.show();
 			}
 		});
 		//run
 		run.setOnAction(value ->{
-//			heroController.runner();
-			showHero();
-			gameMode();
+			hero = heroController.runner();
+			if (!heroController.getRun()) {
+				if (heroController.getWin() == false) {
+					gameOver();
+				}else {
+					gameMode();
+					a.setAlertType(AlertType.CONFIRMATION);
+					a.setTitle("Runner Alert");
+					a.setContentText("Forced To Fight...\n Winner\n No rewards for trying to escape");
+					a.show();
+				}
+			}else {
+				showHero();
+				gameMode();				
+			}
 		});
 		
 		GridPane.setMargin(north, new Insets(10, 0, 0, 0));
@@ -340,11 +380,29 @@ public class GuiView {
 			run.setVisible(false);
 	}
 	
+	//game complete
+	private void gameWon() {
+		north.setVisible(false);
+		south.setVisible(false);
+		east.setVisible(false);
+		west.setVisible(false);
+		stats.setVisible(false);
+		fight.setVisible(false);
+		run.setVisible(false);
+		next.setVisible(true);
+	}
+	
 	//game over GUI
 	private void gameOver() {
 		fightPane = new GridPane();
 		sceneFight = new Scene(fightPane, 1500, 800);
 		Label lbl = new Label("GAME OVER");
+		Alert a = new Alert(AlertType.NONE);
+		
+		a.setAlertType(AlertType.CONFIRMATION);
+		a.setTitle("Game Overt");
+		a.setContentText("GAME OVER\n\nLoser");
+		a.show();
 		
 		fightPane.add(lbl, 0, 0);
 		lbl.setStyle("-fx-background-color: #00a8ff");
