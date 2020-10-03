@@ -27,6 +27,7 @@ public class GuiView {
 	private TextField[][] world = null;
 	private int[][] hero = null;
 	private HeroController heroController = null;
+	private String award = "";
 	
 	private Scene sceneP1 = null; 
 	private Scene sceneSelect = null;
@@ -48,6 +49,8 @@ public class GuiView {
 	private Button fight = null;
 	private Button run = null;
 	private Button next = null;
+	private Button take = null;
+	private Button leave = null;
 	
 	//Parameterized constructor
 	public GuiView(Stage stage1) {
@@ -108,6 +111,7 @@ public class GuiView {
 		Button submit = new Button("SUBMIT");
 		Button home = new Button("BACK");
 		List<String> tempHero = new ArrayList<>();
+		Alert a = new Alert(AlertType.NONE);
 		
 		tempHero = WorldContriller.collect();
 		
@@ -131,8 +135,16 @@ public class GuiView {
 		//setting action for buttons
 		home.setOnAction(value ->{stage.setScene(sceneP1);});
 		submit.setOnAction(value ->{
-			showWorld();
-			});
+			if (!(tfID.getValue()==null)) {
+				WorldContriller.currentPlayer(tfID.getValue());
+				showWorld();				
+			}else {
+				a.setAlertType(AlertType.ERROR);
+				a.setTitle("ERROR");
+				a.setContentText("SELECT OPTION");
+				a.show();				
+			}
+		});
 		
 		submit.setStyle("-fx-font-weight: bold; -fx-font-size: 20px; -fx-text-fill: #4cd137;");
 		home.setStyle("-fx-font-weight: bold; -fx-font-size: 20px; -fx-text-fill: #4cd137;");
@@ -156,6 +168,7 @@ public class GuiView {
 		String paladins[] = {"Keith", "Lance", "Hunk", "Pidge", "Shiro", "Allura"};
 		String xMen[] = {"Cyclops", "Beast", "Havok", "X-23", "Storm", "Colossus", "Bloodstorm", "Ink"};
 		String thundercats[] = {"Jaga", "WilyKit", "WilyKat", "Tygra", "Cheetara", "Lion-O", "Panthro"};
+		Alert a = new Alert(AlertType.NONE);
 		
 		ComboBox<String> tfID = new ComboBox<String>(FXCollections.observableArrayList(tempHero));
 		ComboBox<String> tfsub = new ComboBox<String>();;
@@ -202,8 +215,20 @@ public class GuiView {
 		//setting action for buttons
 		home.setOnAction(value ->{stage.setScene(sceneP1);});
 		submit.setOnAction(value ->{
-			WorldContriller.newHero(tfID.getValue() + "\t" + tfsub.getValue());
-			showWorld();});
+			
+			if (!(tfID.getValue()==null) && !(tfsub.getValue()==null)) {				
+				WorldContriller.newHero(tfID.getValue() + "\t" + tfsub.getValue());
+				WorldContriller.currentPlayer("-6");
+				showWorld();
+			}else {
+				a.setAlertType(AlertType.ERROR);
+				a.setTitle("ERROR");
+				a.setContentText("SELECT OPTION");
+				a.show();				
+			}
+			
+			
+	});
 		
 		createPane.setStyle("-fx-background-image: url('"+wall+"')");
 		tfID.setStyle("-fx-font-weight: bold; -fx-font-size: 20px; -fx-text-fill: #4cd137;");
@@ -221,6 +246,8 @@ public class GuiView {
 		Alert a = new Alert(AlertType.NONE); 
 		int size = WorldContriller.getWorldSize();
 		Button home = new Button("Quit");
+		take = new Button("Y");
+		leave = new Button("N");
 		stats = new Button("Stats");
 		next = new Button ("Next ");
 		north = new Button("W");
@@ -239,10 +266,11 @@ public class GuiView {
 		next.setVisible(false);
 		fight.setVisible(false);
 		run.setVisible(false);
+		take.setVisible(false);
+		leave.setVisible(false);
 		
 		next.setOnAction(value ->{
 			WorldContriller.setWorld();
-			//selectPage();//
 			showWorld();
 		});
 		
@@ -262,24 +290,25 @@ public class GuiView {
 				
 				if (i == 0 || (i == (size -1))) {
 					world[i][j].setStyle("-fx-background-color: #4cd137");
-					System.out.printf("Adonis\n");
 				}else if ((j == 0 && i != 0) || (j == (size -1) && i != (size -1))) {
 					world[i][j].setStyle("-fx-background-color: #4cd137");
 				}else if (hero[i][j] > 50) {
 					world[i][j].setStyle("-fx-background-color: black");
-					System.out.printf("%d ", hero[i][j]);
 				}
 				worldPane.add(world[i][j], i, j);
 			}
-			System.out.printf("\n");
 		}
 		
 		worldPane.add(north, size/2, size + 1);
 		worldPane.add(fight, size/2, size + 1);
+		worldPane.add(take, size/2, size + 1);
+		
 		worldPane.add(east, size/2 + 1, size + 2);
 		worldPane.add(west, size/2 - 1, size + 2);
 		worldPane.add(south, size/2, size + 2);
 		worldPane.add(run, size/2, size + 2);
+		worldPane.add(leave, size/2, size + 2);
+		
 		worldPane.add(home, 0, size + 1);
 		worldPane.add(stats, size -1, size + 1);
 		worldPane.add(next, size -1, size + 1);
@@ -288,6 +317,28 @@ public class GuiView {
 		showHero();
 		
 		//setting on action
+		stats.setOnAction(value ->{
+			a.setAlertType(AlertType.INFORMATION);
+			a.setTitle("Stats");
+			a.setContentText(WorldContriller.getStats());
+			a.show();
+			
+		});
+		
+		home.setOnAction(value ->{
+			System.exit(0);
+		});
+		
+		take.setOnAction(value ->{
+			WorldContriller.getAward(award);
+			gameMode();
+		});
+		
+		leave.setOnAction(value ->{
+			gameMode();
+		});
+		
+		//up
 		north.setOnAction(value -> {
 			hero = heroController.moveHero("UP");
 			fightMode();
@@ -335,9 +386,12 @@ public class GuiView {
 				gameMode();
 				a.setAlertType(AlertType.CONFIRMATION);
 				a.setTitle("Tough Guy Ehhy");
-				a.setContentText("Winner\n reqard -> "+ heroController.getAward());
+				award = heroController.getAward();
+				a.setContentText("Winner\n You may collect or leave the award\naward -> "+ award);
 				a.show();
 				a.show();
+				if (award.trim().equals("none") == false)
+					award();
 			}
 		});
 		//run
@@ -379,6 +433,21 @@ public class GuiView {
 		}
 	}
 	
+	//collect or leave award
+	private void award() {
+		if (heroController.getFight()) {
+			north.setVisible(false);
+			south.setVisible(false);
+			east.setVisible(false);
+			west.setVisible(false);
+			stats.setVisible(false);
+			fight.setVisible(false);
+			run.setVisible(false);
+			take.setVisible(true);
+			leave.setVisible(true);
+		}
+	}
+	
 	private void gameMode() {
 			north.setVisible(true);
 			south.setVisible(true);
@@ -387,6 +456,8 @@ public class GuiView {
 			stats.setVisible(true);
 			fight.setVisible(false);
 			run.setVisible(false);
+			take.setVisible(false);
+			leave.setVisible(false);
 	}
 	
 	//game complete
@@ -409,7 +480,7 @@ public class GuiView {
 		Alert a = new Alert(AlertType.NONE);
 		
 		a.setAlertType(AlertType.CONFIRMATION);
-		a.setTitle("Game Overt");
+		a.setTitle("Game Over");
 		a.setContentText("GAME OVER\n\nLoser");
 		a.show();
 		

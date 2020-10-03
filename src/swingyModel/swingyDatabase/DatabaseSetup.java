@@ -12,7 +12,7 @@ public abstract class DatabaseSetup {
 	private static File myObj;
 	private static String fileName = "data.txt";
 	private static int count = 0;
-	private static String data = "";
+	private String data = "";
 	private static String line = "";
 	private static List<String> collection = null;
 	
@@ -21,7 +21,7 @@ public abstract class DatabaseSetup {
 		String old = readFile();
 		try {
 		      FileWriter myWriter = new FileWriter(fileName);
-		      myWriter.write(old + (++count) +"\t"+info+"\t1\t0\t10\t10\t0");
+		      myWriter.write(old + (++count) +"\t"+info+"\t1\t1000\t10\t10\t0");
 		      myWriter.close();
 		      System.out.println("Successfully wrote to the file.");
 		} catch (IOException e) {
@@ -30,10 +30,16 @@ public abstract class DatabaseSetup {
 		}
 	}
 
+	//getter for count
+	public static String getCount() {
+		return (count+"\tNew");
+	}
+	
 	//reading file
 	private static String readFile() {
+		String data = "";
 		try {
-		      myObj = new File(fileName);
+			File myObj = new File(fileName);
 		      Scanner myReader = new Scanner(myObj);
 		      while (myReader.hasNextLine()) {
 		        data += myReader.nextLine() + "\n";
@@ -48,23 +54,26 @@ public abstract class DatabaseSetup {
 	}
 	
 	//get content by id
-	public static String ReadLine(int id) {
+	public static String ReadLine(String id) {
 		try {
-		      myObj = new File(fileName);
-		      Scanner myReader = new Scanner(myObj);
-		      
-		      while (myReader.hasNextLine()) {
-		    	  String[] coll = myReader.nextLine().split("\t");
-		    	  if (coll[0].equals(id)) {
-		    		  line = myReader.nextLine() + "\n";
-		    		  break;
-		    	  }
-		      }
-		      myReader.close();
-		    } catch (FileNotFoundException e) {
-		      System.out.println("An error occurred.");
-		      e.printStackTrace();
-		    }
+			line = "";
+			String tmp = "";
+			myObj = new File(fileName);
+			Scanner myReader = new Scanner(myObj);
+			
+			while (myReader.hasNextLine()) {
+				tmp = myReader.nextLine();
+				String[] coll = tmp.split("\t");
+				if (coll[0].equals(id)) {
+					line = tmp + "\n";
+					break;
+				}
+			}
+			myReader.close();
+		}catch (FileNotFoundException e) {
+			System.out.println("An error occurred.");
+			e.printStackTrace();
+		}
 		return (line);
 	}
 	
@@ -77,7 +86,7 @@ public abstract class DatabaseSetup {
 			
 			while (myReader.hasNextLine()) {
 				String[] coll = myReader.nextLine().split("\t");
-				collection.add( coll[0] + "->\t" + coll[2] + "\t\tL" + coll[4]);
+				collection.add( coll[0] + "\t" + coll[2] + "\t\tL" + coll[3]);
 			}
 			myReader.close();
 		} catch (FileNotFoundException e) {
@@ -86,5 +95,32 @@ public abstract class DatabaseSetup {
 		}
 		return (collection);
 	}
-	
+
+	public static void update(String update, String ID) {
+		String content = readFile();
+		System.out.println("++++++"+ content +"++++++++");
+		String broken[] = content.trim().split("\n");
+		String temp[] = null;
+		String contents = "";
+		for (String c : broken) {
+			temp = c.trim().split("\t");
+//			System.out.println("count = "+ count);
+			if (temp[0].trim().equals(ID)) {
+				c = update;
+			}
+			contents += c + "\n";
+			System.out.println("---"+ c);
+		}
+		System.out.println("---\n"+ contents.trim()+"-- count ="+count+"\n---");
+		//writing to file
+		try {
+		      FileWriter myWriter = new FileWriter(fileName);
+		      myWriter.write(contents);
+		      myWriter.close();
+
+		} catch (IOException e) {
+		      System.out.println("An error occurred.");
+		      e.printStackTrace();
+		}
+	}
 }

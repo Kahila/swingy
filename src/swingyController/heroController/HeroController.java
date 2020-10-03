@@ -93,7 +93,7 @@ public class HeroController {
 		if (hero[r][c] > 50) {
 			this.fight = true;
 			int rand = rand(200);
-			if (rand >= 70) {
+			if (rand >= 0) {//////set to 75
 				win = true;
 			}else {
 				win = false;
@@ -147,7 +147,7 @@ public class HeroController {
 			return (award[1]);
 		else if (rand > 55)
 			return (award[0]);
-		return (null);
+		return ("none");
 	}
 	
 	//method to check if the level has been completed
