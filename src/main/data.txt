@@ -1,0 +1,1 @@
+1	Paladin	Pidge	3	4800	60	60	50
