@@ -1,7 +1,11 @@
 package swingyController.worldController;
 
+import swingyView.swingyViewConsole.ConsoleView;
 import swingyView.swingyViewGui.*;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,15 +16,17 @@ import swingyModel.swingyDatabase.DatabaseSetup;
 
 public class WorldContriller extends Application{
 	private static HeroController heroController = null;
-	private static int level = 0;
+	private static ConsoleView console= new ConsoleView();
 	private static String Stats = "";
 	private static List<String> collection = null;
 	private static String[] HERO = new String[8]; //hero content will be stored and persisted here
+	private BufferedReader reader;
 	
 	public static void main(String[] args) {
 		heroController = new HeroController();
 		heroController.getHero();
-		launch(args);
+		//launch(args);
+		console.worldView();
 	}
 	
 	@Override
@@ -127,7 +133,17 @@ public class WorldContriller extends Application{
 	//update content for hero during gamePlay
 	private static void update() {
 		String content = HERO[0] + "\t" + HERO[1] + "\t" + HERO[2] + "\t"+HERO[3]+"\t" + HERO[4] +"\t"+ HERO[5] +"\t"+ HERO[6] +"\t"+ HERO[7] +"";
-		//System.out.println(content);
 		DatabaseSetup.update(content, HERO[0]);
+	}
+	
+	//get user input for GUI
+	public String userInput() {
+		reader =  new BufferedReader(new InputStreamReader(System.in));
+		try {
+			return (reader.readLine());
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return (null);
 	}
 }

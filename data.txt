@@ -1,0 +1,13 @@
+1	X-Men	Bloodstorm	4	8050	30	40	50
+2	Avenger	Iron-Man	3	4800	10	10	10
+3	X-Men	Storm	1	1000	10	10	0
+4	X-Men	Colossus	1	1000	10	10	0
+5	X-Men	Colossus	1	1000	10	10	0
+6	ThunderCat	Lion-O	3	4800	60	80	50
+7	Paladin	Shiro	1	1000	10	10	0
+8	X-Men	Beast	1	1000	10	10	0
+9	Avenger	Ant-Man	5	12200	70	90	70
+10	Avenger	Vision	1	1000	10	10	0
+11	Avenger	Wasp	1	1000	10	10	0
+12	Avenger	Thor	2	2450	10	10	0
+13	Paladin	Hunk	1	1000	10	10	0

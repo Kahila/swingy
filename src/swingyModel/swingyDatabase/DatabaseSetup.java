@@ -23,7 +23,6 @@ public abstract class DatabaseSetup {
 		      FileWriter myWriter = new FileWriter(fileName);
 		      myWriter.write(old + (++count) +"\t"+info+"\t1\t1000\t10\t10\t0");
 		      myWriter.close();
-		      System.out.println("Successfully wrote to the file.");
 		} catch (IOException e) {
 		      System.out.println("An error occurred.");
 		      e.printStackTrace();
